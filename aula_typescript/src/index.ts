@@ -1,1 +1,6 @@
-console.log('Olá Mundo!');
+import { exemploIfLoop, exemploTipos } from "./exemplos/primitivos";
+
+exemploIfLoop();
+
+//exemploTipos();
+
