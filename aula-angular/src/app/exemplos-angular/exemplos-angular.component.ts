@@ -18,7 +18,7 @@ export class ExemplosAngularComponent  {
   selecaoTurma = new EventEmitter<string>(); 
 
   @Input()
-  switch = true;
+  switch = false;
 
   atualizaTurma(input:any) {
     console.log('botao');
@@ -28,7 +28,7 @@ export class ExemplosAngularComponent  {
   }
   
   switchTurma(){
-    console.log('switich');
+    this.switch = !this.switch
     
   }
 }

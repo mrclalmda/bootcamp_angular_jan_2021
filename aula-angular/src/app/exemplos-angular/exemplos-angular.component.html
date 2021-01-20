@@ -9,7 +9,7 @@
 
 
 
-<ng-template [ngIf]="switch===true">
+<ng-template [ngIf]="switch">
 <div *ngIf="listaAlunos?.length; else nenhumaLista">
     <ul>
         <li *ngFor="let aluno of listaAlunos"> 
