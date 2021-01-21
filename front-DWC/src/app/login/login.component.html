@@ -1,3 +1,6 @@
-<po-page-login [p-logo]='logo' [p-secondary-logo]='logo'>
-
+<po-page-login
+  [p-logo]="logo"
+  [p-secondary-logo]="logo"
+  (p-login-submit)="login($event)"
+>
 </po-page-login>
