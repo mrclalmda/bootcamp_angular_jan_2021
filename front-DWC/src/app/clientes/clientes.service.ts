@@ -1,18 +1,47 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { Clientes, ClientesApi } from './models/clientes';
+import { forkJoin, Observable, of } from 'rxjs';
+import { map, pluck, switchMap } from 'rxjs/operators';
+import { CidadesService } from '../shared/servicos/cidades.service';
+import { EstadosService } from '../shared/servicos/estados.service';
+import { Cliente, Clientes, ClientesApi } from './models/clientes';
+
+const URL = 'http://localhost:3000/clientes';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ClientesService {
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private cidadeService: CidadesService,
+    private estadoService: EstadosService
+  ) {}
 
   retornaClientes(): Observable<Clientes> {
-    return this.http
-      .get<ClientesApi>('http://localhost:3000/clientes')
-      .pipe(map((api)=> api.items));
+    return this.http.get<ClientesApi>(URL).pipe(pluck('items'));
+  }
+
+  retornaCliente(id: string): Observable<Cliente> {
+    return this.http.get<Cliente>(`${URL}/${id}`);
+  }
+
+  retornaClienteComEnderecoCompleto(id: string): Observable<Cliente> {
+    return this.retornaCliente(id).pipe(
+      switchMap((cliente) =>
+        forkJoin({
+          cliente: of(cliente),
+          cidade: this.cidadeService.retornaCidade(cliente.cidade),
+          estado: this.estadoService.retornaEstado(cliente.estado),
+        })
+      ),
+      map((retornoFork) => {
+        return {
+          ...retornoFork.cliente,
+          cidade: retornoFork.cidade.nome,
+          estado: retornoFork.estado.nome,
+        };
+      })
+    );
   }
 }
